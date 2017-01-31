@@ -18,6 +18,7 @@ use router::Router;
 use rustc_serialize::json;
 
 const INDEX_HTML: &'static [u8] = include_bytes!("../../assets/index.html");
+const FAVICON_PNG: &'static [u8] = include_bytes!("../../assets/favicon-192x192.png");
 
 #[derive(RustcEncodable)]
 struct AlarmResponse {
@@ -37,6 +38,11 @@ impl Key for Context { type Value = Context; }
 fn index_handler(_: &mut Request) -> IronResult<Response> {
     let content_type = "text/html".parse::<Mime>().unwrap();
     Ok(Response::with((content_type, status::Ok, INDEX_HTML)))
+}
+
+fn favicon_handler(_: &mut Request) -> IronResult<Response> {
+    let content_type = "image/png".parse::<Mime>().unwrap();
+    Ok(Response::with((content_type, status::Ok, FAVICON_PNG)))
 }
 
 fn version_handler(_: &mut Request) -> IronResult<Response> {
@@ -142,6 +148,7 @@ fn run(matches: ArgMatches) -> Result<(), DomoError> {
 
     let mut router = Router::new();
     router.get("/", index_handler, "index");
+    router.get("/favicon-192x192.png", favicon_handler, "favicon");
     router.get("/version", version_handler, "version");
     router.get("/alarm.json", alarm_handler, "alarm");
 
