@@ -32,7 +32,7 @@ impl Client {
 
         let data = Json::from_reader(&mut resp).unwrap();
         let status = data.find("status").unwrap().as_string();
-        if status != Some("Ok") {
+        if status != Some("OK") {
             return Err(DomoError::Domoticz);
         }
 
@@ -53,7 +53,6 @@ impl Client {
 
         let data = Json::from_reader(&mut resp).unwrap();
         let status = data.find("status").unwrap().as_string();
-        // Beware, this request returns "OK", not "Ok".
         if status != Some("OK") {
             return Err(DomoError::Domoticz);
         }

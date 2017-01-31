@@ -7,3 +7,5 @@ pub mod config;
 pub mod domoticz;
 pub mod error;
 pub mod message;
+
+pub const VERSION: &'static str = env!("CARGO_PKG_VERSION");

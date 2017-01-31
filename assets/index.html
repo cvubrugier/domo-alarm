@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Home alarm configuration">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.deep_purple-pink.min.css">
+    <style>
+      .my-layout {
+        background-color: #FAFAFA;
+        color: #666;
+      }
+
+      .my-label {
+        font-size: 20px;
+        font-weight: 400;
+      }
+    </style>
+    <title>Home alarm</title>
+  </head>
+  <body>
+
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-drawer-button my-layout">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout__title">Home alarm</span>
+        </div>
+      </header>
+
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell--4-col">
+            <!-- Home picture -->
+            <svg viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="lightgrey"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          </div>
+
+          <div class="mdl-cell mdl-cell--3-col mdl-cell--1-offset">
+            <label for="alarm_switch" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+              <input id="alarm_switch" type="checkbox" class="mdl-switch__input">
+              <span class="mdl-switch__label my-label" id="alarm_text">Alarm</span>
+            </label>
+          </div>
+        </div>
+      </main>
+
+      <div class="mdl-snackbar mdl-js-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button type="button" class="mdl-snackbar__action"></button>
+      </div>
+    </div>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script>
+     'use strict';
+
+     function notify(message) {
+         let notification = document.querySelector('.mdl-js-snackbar');
+         notification.MaterialSnackbar.showSnackbar({
+             message: message,
+         });
+     }
+
+     function updateAlarmStatus(switch_on = null) {
+         var alarm_label = document.getElementById('alarm_switch').parentNode;
+         var alarm_text = document.getElementById('alarm_text');
+         let url = '/alarm.json';
+         if (typeof(switch_on) === 'boolean') {
+             url += '?command=';
+             url += switch_on ? 'on' : 'off';
+         }
+         let xhr = new XMLHttpRequest();
+         xhr.ontimeout = function () {
+             notify('Error: HTTP request timed out.');
+         };
+         xhr.onload = function() {
+             if (xhr.readyState === 4) {
+                 if (xhr.status === 200) {
+                     let response = JSON.parse(xhr.responseText);
+                     if (response.alarm_on) {
+                         alarm_label.MaterialSwitch.on();
+                         alarm_text.textContent = 'Alarm on';
+                     } else {
+                         alarm_label.MaterialSwitch.off();
+                         alarm_text.textContent = 'Alarm off';
+                     }
+                     if (!response.is_ok) {
+                         notify(response.message);
+                     }
+                 } else {
+                     console.error(xhr.statusText);
+                 }
+             }
+         };
+         xhr.addEventListener('error', function(evt) {
+             if (typeof(switch_on) === 'boolean') {
+                 /* Reset the switch to the previous position */
+                 switch_on ? alarm_label.MaterialSwitch.off() : alarm_label.MaterialSwitch.on();
+                 notify('Error: cannot connect to the HTTP server.');
+             }
+         });
+         xhr.open('get', url, true);
+         xhr.timeout = 10000;
+         xhr.send();
+     }
+
+     document.addEventListener('DOMContentLoaded', function(event) {
+         updateAlarmStatus();
+
+         document.getElementById('alarm_switch').addEventListener('change', function() {
+             updateAlarmStatus(this.checked);
+         });
+     });
+    </script>
+  </body>
+</html>

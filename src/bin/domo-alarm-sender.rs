@@ -36,7 +36,7 @@ fn run(matches: ArgMatches) -> Result<(), DomoError> {
 
 fn main() {
     let matches = App::new("domo-alarm-sender")
-        .version("0.1")
+        .version(domo::VERSION)
         .author("Christophe Vu-Brugier")
         .about("Notification system for Domoticz to send an email and ring an alarm")
         .arg(Arg::with_name("config")
