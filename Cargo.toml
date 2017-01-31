@@ -1,0 +1,16 @@
+[package]
+name = "domo-alarm-sender"
+version = "0.1.0"
+authors = ["Christophe Vu-Brugier <cvubrugier@fastmail.fm>"]
+
+[lib]
+name = "domo"
+path = "src/lib.rs"
+
+[dependencies]
+clap = "2.20"
+hyper = "0.10"
+lettre = { git = "https://github.com/lettre/lettre.git" }
+reqwest = "0.3"
+rustc-serialize = "0.3"
+toml = "0.2"
