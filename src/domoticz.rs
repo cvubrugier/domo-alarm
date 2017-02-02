@@ -63,9 +63,9 @@ impl Client {
         }
 
         match results[0].find("Status").unwrap().as_string() {
-            Some("On") => { return Ok(true) },
-            Some("Off") => { return Ok(false) },
-            _ => { return Err(DomoError::Domoticz) },
+            Some("On") => { Ok(true) },
+            Some("Off") => { Ok(false) },
+            _ => { Err(DomoError::Domoticz) },
         }
     }
 }

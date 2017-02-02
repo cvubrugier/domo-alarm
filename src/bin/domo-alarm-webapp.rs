@@ -70,7 +70,7 @@ fn alarm_request_parse(req: &Request) -> Option<bool> {
         }
     }
 
-    return None;
+    None
 }
 
 fn alarm_on(context: &Context) -> AlarmResponse {

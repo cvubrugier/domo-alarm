@@ -25,5 +25,5 @@ pub fn sendmail<S1, S2, S3>(from: S1, to: S2, message: S3, smtp_config: SmtpConf
 
     mailer.send(email)?;
 
-    return Ok(());
+    Ok(())
 }
