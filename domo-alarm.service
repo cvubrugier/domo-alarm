@@ -1,0 +1,12 @@
+[Unit]
+Description=Notification system for Domoticz to send an email and ring an alarm
+Documentation=https://github.com/cvubrugier/domo-alarm
+After=domoticz.service
+Requires=domoticz.service
+
+[Service]
+Type=simple
+ExecStart=/home/pi/domoticz/scripts/domo-alarm-webapp
+
+[Install]
+WantedBy=multi-user.target
